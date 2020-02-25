@@ -95,6 +95,10 @@ export default function Landing() {
     };
 
     const handleClick = e => {
+      setFormData(prevFormData => {
+        return { ...prevFormData, message: "" };
+      });
+
       currentSocket.emit("chat", {
         handle: formData.handle,
         message: formData.message,
@@ -121,6 +125,7 @@ export default function Landing() {
           name={"message"}
           type="text"
           placeholder="Message"
+          value={formData.message}
           onChange={e => handleChange(e)}
         />
         <button id="send" onClick={e => handleClick(e)}>
