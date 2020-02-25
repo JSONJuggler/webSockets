@@ -59,6 +59,14 @@ export default function Landing() {
           }
         });
       });
+
+      currentSocket.on("removeFeedback", function(data) {
+        setFeedback(prevFeedback => [
+          _.filter(prevFeedback, fb => {
+            return !_.isMatch(fb, { key: data.key });
+          })
+        ]);
+      });
     }
   }, [currentSocket]);
 
@@ -123,15 +131,6 @@ export default function Landing() {
     // currentSocket.once("receivingEvent", function(data) {
     //   console.log("receiving");
     // });
-
-    currentSocket.once("removeFeedback", function(data) {
-      console.log("removing feedback");
-      setFeedback(prevFeedback => [
-        _.filter(prevFeedback, fb => {
-          return !_.isMatch(fb, { key: data.key });
-        })
-      ]);
-    });
 
     const handleHandle = e => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
