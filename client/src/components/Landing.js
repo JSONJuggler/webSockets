@@ -29,18 +29,30 @@ export default function Landing() {
       });
 
       currentSocket.on("typing", function(data) {
-        console.log("receiving typing event");
-
         setFeedback(prevFeedback => {
-          const duplicateCheck = _.findWhere(prevFeedback, {
+          const duplicateKeyCheck = _.findWhere(prevFeedback, {
             key: data.currentSocketId
           });
-          if (duplicateCheck) {
-            return prevFeedback;
+          if (duplicateKeyCheck) {
+            const newFeedback = (
+              <p key={data.currentSocketId} name={data.handle}>
+                <em>{data.handle} is typing </em>
+              </p>
+            );
+            if (duplicateKeyCheck.props.name === newFeedback.props.name) {
+              return prevFeedback;
+            } else {
+              return [
+                ..._.filter(prevFeedback, fb => {
+                  return !_.isMatch(fb, { key: data.currentSocketId });
+                }),
+                newFeedback
+              ];
+            }
           } else {
             return [
               ...prevFeedback,
-              <p key={data.currentSocketId}>
+              <p key={data.currentSocketId} name={data.handle}>
                 <em>{data.handle} is typing </em>
               </p>
             ];
