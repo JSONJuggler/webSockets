@@ -16,6 +16,28 @@ export default function Landing() {
     };
   }, []);
 
+  useEffect(() => {
+    if (currentSocket) {
+      currentSocket.on("chat", function(data) {
+        console.log("receiving chat event");
+
+        setChat(prevChat => {
+          if (_.findWhere(prevChat, { key: data.messageId })) {
+            return prevChat;
+          } else {
+            return [
+              ...prevChat,
+              <p key={data.messageId}>
+                <strong>{data.handle}:</strong>
+                {data.message}
+              </p>
+            ];
+          }
+        });
+      });
+    }
+  });
+
   // useEffect(() => {
   //   console.log("using effect");
   //   if (currentSocket) {
@@ -100,24 +122,6 @@ export default function Landing() {
           return !_.isMatch(fb, { key: data.key });
         })
       ]);
-    });
-
-    currentSocket.once("chat", function(data) {
-      console.log("receiving chat event");
-
-      setChat(prevChat => {
-        if (_.findWhere(prevChat, { key: data.messageId })) {
-          return prevChat;
-        } else {
-          return [
-            ...prevChat,
-            <p key={data.messageId}>
-              <strong>{data.handle}:</strong>
-              {data.message}
-            </p>
-          ];
-        }
-      });
     });
 
     const handleHandle = e => {
