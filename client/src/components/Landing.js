@@ -14,6 +14,7 @@ export default function Landing() {
   }, []);
 
   const [yourKey, setYourKey] = useState("");
+  const [chat, setChat] = useState([]);
 
   const [formData, setFormData] = useState({
     handle: "",
@@ -70,10 +71,24 @@ export default function Landing() {
         })
       ]);
     });
+
+    currentSocket.on("chat", function(data) {
+      // setReceiving(true);
+      // console.log(data);
+      console.log(data);
+      setChat(prevChat => [
+        ...prevChat,
+        <p>
+          <strong>{chat.handle}:</strong>
+          {chat.message}
+        </p>
+      ]);
+    });
+
     return (
       <div id="mario-chat">
         <div id="chat-window">
-          <div id="output"></div>
+          <div id="output">{chat}</div>
           <div id="feedback">{feedback}</div>
         </div>
         <input
