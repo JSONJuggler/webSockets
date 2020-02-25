@@ -74,9 +74,9 @@ export default function Landing() {
   const [feedback, setFeedback] = useState([]);
 
   if (currentSocket) {
-    currentSocket.once("receivingEvent", function(data) {
-      console.log("receiving");
-    });
+    // currentSocket.once("receivingEvent", function(data) {
+    //   console.log("receiving");
+    // });
     currentSocket.once("typing", function(data) {
       console.log("receiving typing event");
       setFeedback(prevFeedback => {
@@ -128,8 +128,7 @@ export default function Landing() {
       // console.log(e.target.value);
       currentSocket.emit("typing", {
         handle: formData.handle,
-        currentSocketId: currentSocket.id,
-        event: true
+        currentSocketId: currentSocket.id
       });
       setYourKey(currentSocket.id);
       setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -139,10 +138,9 @@ export default function Landing() {
       currentSocket.emit("chat", {
         handle: formData.handle,
         message: formData.message,
-        messageId: uuidv4(),
-        event: true
+        messageId: uuidv4()
       });
-      currentSocket.emit("removeFeedback", { key: yourKey, event: true });
+      currentSocket.emit("removeFeedback", { key: yourKey });
     };
 
     return (
