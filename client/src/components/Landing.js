@@ -95,6 +95,14 @@ export default function Landing() {
     };
 
     const handleClick = e => {
+      const messageId = uuidv4();
+      setChat(prevChat => [
+        ...prevChat,
+        <p key={messageId}>
+          <strong>{formData.handle}:</strong>
+          {formData.message}
+        </p>
+      ]);
       setFormData(prevFormData => {
         return { ...prevFormData, message: "" };
       });
@@ -102,7 +110,7 @@ export default function Landing() {
       currentSocket.emit("chat", {
         handle: formData.handle,
         message: formData.message,
-        messageId: uuidv4()
+        messageId
       });
       currentSocket.emit("removeFeedback", { key: yourKey });
     };

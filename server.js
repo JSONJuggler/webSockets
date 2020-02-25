@@ -15,8 +15,7 @@ io.on("connect", function(socket) {
   console.log("made socket connection");
 
   socket.on("chat", function(data) {
-    io.emit("chat", data);
-
+    socket.broadcast.emit("chat", data);
     console.log("received chat event");
   });
 
