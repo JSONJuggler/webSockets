@@ -48,9 +48,10 @@ export default function Landing() {
     };
     currentSocket.on("typing", function(data) {
       // setReceiving(true);
-      console.log("setting feedback");
       setFeedback(prevFeedback => {
         // console.log(_.findWhere(prevChat, { messageId: data.messageId }));
+        console.log("prevFeedback");
+        console.log(prevFeedback);
         console.log(_.findWhere(prevFeedback, { key: data.currentSocketId }));
 
         if (_.findWhere(prevFeedback, { key: data.currentSocketId })) {
@@ -76,20 +77,9 @@ export default function Landing() {
 
     currentSocket.on("chat", function(data) {
       // setReceiving(true);
-      console.log("setting chat");
-      // setFeedback(prevFeedback => {
-      //   if (_.findWhere(prevFeedback, { key: data.id })) {
-      //     return prevFeedback;
-      //   } else {
-      //     return [
-      //       ...prevFeedback,
-      //       <p key={data.id}>
-      //         <em>{data.handle} is typing </em>
-      //       </p>
-      //     ];
-      //   }
-      // });
       setChat(prevChat => {
+        console.log("prevChat");
+        console.log(prevChat);
         console.log(_.findWhere(prevChat, { messageId: data.messageId }));
         if (_.findWhere(prevChat, { messageId: data.messageId })) {
           return prevChat;
@@ -104,9 +94,7 @@ export default function Landing() {
         }
       });
     });
-    console.log("hello");
 
-    // console.log(chat);
     return (
       <div id="mario-chat">
         <div id="chat-window">
