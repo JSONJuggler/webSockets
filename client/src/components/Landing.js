@@ -27,6 +27,26 @@ export default function Landing() {
           </p>
         ]);
       });
+
+      currentSocket.on("typing", function(data) {
+        console.log("receiving typing event");
+
+        setFeedback(prevFeedback => {
+          const duplicateCheck = _.findWhere(prevFeedback, {
+            key: data.currentSocketId
+          });
+          if (duplicateCheck) {
+            return prevFeedback;
+          } else {
+            return [
+              ...prevFeedback,
+              <p key={data.currentSocketId}>
+                <em>{data.handle} is typing </em>
+              </p>
+            ];
+          }
+        });
+      });
     }
   }, [currentSocket]);
 
@@ -91,21 +111,6 @@ export default function Landing() {
     // currentSocket.once("receivingEvent", function(data) {
     //   console.log("receiving");
     // });
-    currentSocket.once("typing", function(data) {
-      console.log("receiving typing event");
-      setFeedback(prevFeedback => {
-        if (_.findWhere(prevFeedback, { key: data.currentSocketId })) {
-          return prevFeedback;
-        } else {
-          return [
-            ...prevFeedback,
-            <p key={data.currentSocketId}>
-              <em>{data.handle} is typing </em>
-            </p>
-          ];
-        }
-      });
-    });
 
     currentSocket.once("removeFeedback", function(data) {
       console.log("removing feedback");
