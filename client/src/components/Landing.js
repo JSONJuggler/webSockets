@@ -19,21 +19,13 @@ export default function Landing() {
   useEffect(() => {
     if (currentSocket) {
       currentSocket.on("chat", function(data) {
-        console.log("receiving chat event");
-
-        setChat(prevChat => {
-          if (_.findWhere(prevChat, { key: data.messageId })) {
-            return prevChat;
-          } else {
-            return [
-              ...prevChat,
-              <p key={data.messageId}>
-                <strong>{data.handle}:</strong>
-                {data.message}
-              </p>
-            ];
-          }
-        });
+        setChat(prevChat => [
+          ...prevChat,
+          <p key={data.messageId}>
+            <strong>{data.handle}:</strong>
+            {data.message}
+          </p>
+        ]);
       });
     }
   }, [currentSocket]);
