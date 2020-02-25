@@ -9,8 +9,6 @@ const server = app.listen(PORT, () =>
   console.log(`Server started on port ${PORT}`)
 );
 
-// app.use(express.static("public"));
-
 const io = socket(server);
 
 io.on("connect", function(socket) {
