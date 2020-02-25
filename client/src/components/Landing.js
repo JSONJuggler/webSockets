@@ -93,7 +93,8 @@ export default function Landing() {
       });
     });
 
-    currentSocket.on("removeFeedback", function(data) {
+    currentSocket.once("removeFeedback", function(data) {
+      console.log("removing feedback");
       setFeedback(prevFeedback => [
         _.filter(prevFeedback, fb => {
           return !_.isMatch(fb, { key: data.key });
@@ -101,7 +102,7 @@ export default function Landing() {
       ]);
     });
 
-    currentSocket.on("chat", function(data) {
+    currentSocket.once("chat", function(data) {
       console.log("receiving chat event");
 
       setChat(prevChat => {
