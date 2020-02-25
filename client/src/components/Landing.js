@@ -36,7 +36,7 @@ export default function Landing() {
         });
       });
     }
-  });
+  }, [currentSocket]);
 
   // useEffect(() => {
   //   console.log("using effect");
