@@ -10,7 +10,6 @@ export default function Landing() {
     // return () => {
     //   socket.disconnect();
     // };
-    console.log(currentSocket);
   }, []);
 
   const [formData, setFormData] = useState({
@@ -34,11 +33,27 @@ export default function Landing() {
     };
     currentSocket.on("typing", function(data) {
       setReceiving(true);
-      setFeedback(
-        <p>
-          <em>{data} is typing </em>
-        </p>
-      );
+      setFeedback(prevFeedback => {
+        if (
+          prevFeedback.forEach(feedback => {
+            if (feedback.props.children[0] === data) {
+              return true;
+            } else {
+              return false;
+            }
+          })
+        ) {
+          return prevFeedback;
+        } else {
+          return [
+            ...prevFeedback,
+            <p>
+              <em>{data} is typing </em>
+            </p>
+          ];
+        }
+      });
+      console.log(feedback);
     });
     return (
       <div id="mario-chat">
