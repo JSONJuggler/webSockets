@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import io from "socket.io-client";
 import _ from "underscore";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Landing() {
   const [currentSocket, setCurrentSocket] = useState(null);
@@ -8,9 +9,6 @@ export default function Landing() {
   useEffect(() => {
     const socket = io("http://localhost:5000");
     setCurrentSocket(socket);
-    // return () => {
-    //   socket.disconnect();
-    // };
   }, []);
 
   const [yourKey, setYourKey] = useState("");
@@ -34,7 +32,7 @@ export default function Landing() {
       // console.log(e.target.value);
       currentSocket.emit("typing", {
         handle: formData.handle,
-        id: currentSocket.id
+        currentSocketId: currentSocket.id
       });
       setYourKey(currentSocket.id);
       setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,20 +41,24 @@ export default function Landing() {
     const handleClick = e => {
       currentSocket.emit("chat", {
         handle: formData.handle,
-        message: formData.message
+        message: formData.message,
+        messageId: uuidv4()
       });
       currentSocket.emit("removeFeedback", { key: yourKey });
     };
     currentSocket.on("typing", function(data) {
       // setReceiving(true);
-      // console.log(data);
+      console.log("setting feedback");
       setFeedback(prevFeedback => {
-        if (_.findWhere(prevFeedback, { key: data.id })) {
+        // console.log(_.findWhere(prevChat, { messageId: data.messageId }));
+        console.log(_.findWhere(prevFeedback, { key: data.currentSocketId }));
+
+        if (_.findWhere(prevFeedback, { key: data.currentSocketId })) {
           return prevFeedback;
         } else {
           return [
             ...prevFeedback,
-            <p key={data.id}>
+            <p key={data.currentSocketId}>
               <em>{data.handle} is typing </em>
             </p>
           ];
@@ -74,17 +76,37 @@ export default function Landing() {
 
     currentSocket.on("chat", function(data) {
       // setReceiving(true);
-      // console.log(data);
-      console.log(data);
-      setChat(prevChat => [
-        ...prevChat,
-        <p>
-          <strong>{chat.handle}:</strong>
-          {chat.message}
-        </p>
-      ]);
+      console.log("setting chat");
+      // setFeedback(prevFeedback => {
+      //   if (_.findWhere(prevFeedback, { key: data.id })) {
+      //     return prevFeedback;
+      //   } else {
+      //     return [
+      //       ...prevFeedback,
+      //       <p key={data.id}>
+      //         <em>{data.handle} is typing </em>
+      //       </p>
+      //     ];
+      //   }
+      // });
+      setChat(prevChat => {
+        console.log(_.findWhere(prevChat, { messageId: data.messageId }));
+        if (_.findWhere(prevChat, { messageId: data.messageId })) {
+          return prevChat;
+        } else {
+          return [
+            ...prevChat,
+            <p key={data.messageId}>
+              <strong>{data.handle}:</strong>
+              {data.message}
+            </p>
+          ];
+        }
+      });
     });
+    console.log("hello");
 
+    // console.log(chat);
     return (
       <div id="mario-chat">
         <div id="chat-window">
