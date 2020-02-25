@@ -13,12 +13,14 @@ export default function Landing() {
     // };
   }, []);
 
+  const [yourKey, setYourKey] = useState("");
+
   const [formData, setFormData] = useState({
     handle: "",
     message: ""
   });
 
-  const [recieving, setReceiving] = useState(false);
+  // const [recieving, setReceiving] = useState(false);
   const [feedback, setFeedback] = useState([]);
 
   if (currentSocket) {
@@ -33,11 +35,19 @@ export default function Landing() {
         handle: formData.handle,
         id: currentSocket.id
       });
+      setYourKey(currentSocket.id);
       setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleClick = e => {
+      currentSocket.emit("chat", {
+        handle: formData.handle,
+        message: formData.message
+      });
+      currentSocket.emit("removeFeedback", { key: yourKey });
+    };
     currentSocket.on("typing", function(data) {
-      setReceiving(true);
+      // setReceiving(true);
       // console.log(data);
       setFeedback(prevFeedback => {
         if (_.findWhere(prevFeedback, { key: data.id })) {
@@ -51,46 +61,20 @@ export default function Landing() {
           ];
         }
       });
-      // setFeedback(prevFeedback => {
-      //   if (prevFeedback.length === 0) {
-      //     return [
-      //       ...prevFeedback,
-      //       <p key={data.id}>
-      //         <em>{data.handle} is typing </em>
-      //       </p>
-      //     ];
-      //   }
-      //   if (prevFeedback.length > 0) {
-      //     console.log("hi");
-
-      //     // prevFeedback.forEach(fb => {
-      //     for (let i = 0; i < prevFeedback.length; i++) {
-      //       if (prevFeedback[i].key === data.id) {
-      //         console.log(prevFeedback[0].key);
-
-      //         console.log("u da same");
-      //         return setFeedback(prevFeedback => prevFeedback);
-      //       } else {
-      //         console.log("u diff");
-
-      //         return setFeedback(prevFeedback => [
-      //           ...prevFeedback,
-      //           <p key={data.id}>
-      //             <em>{data.handle} is typing </em>
-      //           </p>
-      //         ]);
-      //       }
-      //     }
-      //     // });
-      //   }
-      // });
     });
-    console.log(feedback);
+
+    currentSocket.on("removeFeedback", function(data) {
+      setFeedback(prevFeedback => [
+        _.filter(prevFeedback, fb => {
+          return !_.isMatch(fb, { key: data.key });
+        })
+      ]);
+    });
     return (
       <div id="mario-chat">
         <div id="chat-window">
           <div id="output"></div>
-          {recieving && <div id="feedback">{feedback}</div>}
+          <div id="feedback">{feedback}</div>
         </div>
         <input
           id="handle"
@@ -106,7 +90,9 @@ export default function Landing() {
           placeholder="Message"
           onChange={e => handleChange(e)}
         />
-        <button id="send">Send</button>
+        <button id="send" onClick={e => handleClick(e)}>
+          Send
+        </button>
       </div>
     );
   } else {

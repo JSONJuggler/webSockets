@@ -20,6 +20,10 @@ io.on("connect", function(socket) {
     io.emit("chat", data);
   });
 
+  socket.on("removeFeedback", function(data) {
+    socket.broadcast.emit("removeFeedback", data);
+  });
+
   socket.on("typing", function(data) {
     socket.broadcast.emit("typing", data);
   });
