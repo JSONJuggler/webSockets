@@ -80,8 +80,8 @@ export default function Landing() {
       setChat(prevChat => {
         console.log("prevChat");
         console.log(prevChat);
-        console.log(_.findWhere(prevChat, { messageId: data.messageId }));
-        if (_.findWhere(prevChat, { messageId: data.messageId })) {
+        console.log(_.findWhere(prevChat, { key: data.messageId }));
+        if (_.findWhere(prevChat, { key: data.messageId })) {
           return prevChat;
         } else {
           return [
