@@ -7,7 +7,7 @@ export default function Landing() {
   const [currentSocket, setCurrentSocket] = useState(null);
 
   useEffect(() => {
-    const socket = io("http://localhost:5000");
+    var socket = io();
     setCurrentSocket(socket);
     return () => {
       socket.disconnect();
