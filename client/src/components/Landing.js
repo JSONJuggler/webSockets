@@ -112,7 +112,9 @@ export default function Landing() {
         message: formData.message,
         messageId
       });
-      currentSocket.emit("removeFeedback", { key: yourKey });
+      currentSocket.emit("removeFeedback", { key: yourKey }, serverResponse =>
+        console.log(serverResponse)
+      );
     };
 
     return (

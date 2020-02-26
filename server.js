@@ -19,8 +19,9 @@ io.on("connect", function(socket) {
     console.log("received chat event");
   });
 
-  socket.on("removeFeedback", function(data) {
+  socket.on("removeFeedback", function(data, callback) {
     socket.broadcast.emit("removeFeedback", data);
+    callback("removing feedback");
   });
   socket.on("disconnect", function(data) {
     console.log("user disconnected");
